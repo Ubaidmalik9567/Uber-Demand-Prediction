@@ -7,3 +7,29 @@ stages:
       hash: md5
       md5: f63900c8538320fa7d1e177fcb977168
       size: 3409
+  extract_features:
+    cmd: python ./src/features/extract_features.py
+    deps:
+    - path: ./src/features/extract_features.py
+      hash: md5
+      md5: 352d8a8ba8b88f376bca258195119845
+      size: 4111
+    params:
+      params.yaml:
+        extract_features.ewma.alpha: 0.4
+        extract_features.mini_batch_kmeans.n_clusters: 30
+        extract_features.mini_batch_kmeans.n_init: 10
+        extract_features.mini_batch_kmeans.random_state: 42
+    outs:
+    - path: ./data/processed/resampled_data.csv
+      hash: md5
+      md5: 01afb46fca985dadc7a866eae5f5abed
+      size: 8218223
+    - path: ./models/mb_kmeans.joblib
+      hash: md5
+      md5: 868cca2f9cfd84c8681a7ead2b60aa4d
+      size: 141179
+    - path: ./models/scaler.joblib
+      hash: md5
+      md5: 80a592177c93173cf666f33bf0a38e6a
+      size: 999
