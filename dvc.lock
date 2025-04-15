@@ -53,3 +53,23 @@ stages:
       hash: md5
       md5: 9d8fc42cfb0eb631972952dcf06e9485
       size: 9436607
+  train:
+    cmd: python ./src/models/train.py
+    deps:
+    - path: ./data/processed/train.csv
+      hash: md5
+      md5: 9d8fc42cfb0eb631972952dcf06e9485
+      size: 9436607
+    - path: ./src/models/train.py
+      hash: md5
+      md5: 6528a13087b0c3b27117c39f0c48d51a
+      size: 1967
+    outs:
+    - path: ./models/encoder.joblib
+      hash: md5
+      md5: dab6d72f071b8b3d959d360e73baadd1
+      size: 3602
+    - path: ./models/model.joblib
+      hash: md5
+      md5: de7b671e54e05fa6822fb63e846fa607
+      size: 2344
