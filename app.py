@@ -121,3 +121,100 @@ if date and time:
        ])
        
 
+
+       if map_type == "Complete NYC Map":
+              # progress bar
+              progress_bar = st.progress(value=0,text="Operation in progress. Please wait.")
+              for percent_complete in range(100):
+                     sleep(0.05)
+                     progress_bar.progress(percent_complete + 1, text="Operation in progress. Please wait.")
+              
+              # map
+              st.map(data=df_plot, latitude="pickup_latitude", 
+                     longitude="pickup_longitude", size=0.01,
+                     color="color")
+              
+              # remove the progress bar
+              progress_bar.empty()
+              
+              # filter the data 
+              input_data = df.loc[index, :].sort_values("region")
+              target = input_data["total_pickups"]
+
+              # do the predictions
+              predictions = pipe.predict(input_data.drop(columns=["total_pickups"]))
+              
+              # show the map labels
+              # Display the map legend
+              st.markdown("### Map Legend")
+              for ind in range(0,30):
+                     color = colors[ind]
+                     demand = predictions[ind]
+                     if region == ind:
+                            region_id = f"{ind} (Current region)"
+                     else:
+                            region_id = ind
+                     st.markdown(
+                     f'<div style="display: flex; align-items: center;">'
+                     f'<div style="background-color:{color}; width: 20px; height: 10px; margin-right: 10px;"></div>'
+                     f'Region ID: {region_id} <br>'
+                     f"Demand: {int(demand)} <br> <br>", unsafe_allow_html=True
+                     )
+              
+       elif map_type == "Only for Neighborhood Regions":
+              
+              # calculate the distances from centroid
+              distances = kmeans.transform(scaled_cord).values.ravel().tolist()
+              distances = list(enumerate(distances))
+              sorted_distances = sorted(distances, key=lambda x: x[1])[0:9]
+              indexes = sorted([ind[0] for ind in sorted_distances])
+              
+              # filter plot data on regions
+              df_plot_filtered = df_plot[df_plot["region"].isin(indexes)]
+              
+              # progress bar
+              progress_bar = st.progress(value=0,text="Operation in progress. Please wait.")
+              for percent_complete in range(100):
+                     sleep(0.05)
+                     progress_bar.progress(percent_complete + 1, text="Operation in progress. Please wait.")
+              
+              # map
+              st.map(data=df_plot_filtered, latitude="pickup_latitude", 
+                     longitude="pickup_longitude", size=0.01,
+                     color="color")
+              
+              # remove the progress bar
+              progress_bar.empty()
+              
+              # filter the data 
+              input_data = df.loc[index, :]
+              input_data = input_data.loc[input_data["region"].isin(indexes), :].sort_values("region")
+              target = input_data["total_pickups"]
+
+              # do the predictions
+              predictions = pipe.predict(input_data.drop(columns=["total_pickups"]))
+              
+              # show the map labels
+              # Display the map legend
+              st.markdown("### Map Legend")
+              for ind in range(0,9):
+                     color = colors[indexes[ind]]
+                     demand = predictions[ind]
+                     if region == indexes[ind]:
+                            region_id = f"{indexes[ind]} (Current region)"
+                     else:
+                            region_id = indexes[ind]
+                     st.markdown(
+                     f'<div style="display: flex; align-items: center;">'
+                     f'<div style="background-color:{color}; width: 20px; height: 10px; margin-right: 10px;"></div>'
+                     f'Region ID: {region_id} <br>'
+                     f"Demand: {int(demand)} <br> <br>", unsafe_allow_html=True
+              )
+       
+       
+       
+       
+       
+
+       
+
